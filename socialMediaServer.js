@@ -23,7 +23,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 app.set("views", path.resolve(__dirname, "templates"));
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended:false}));
-app.use(express.static(path.join(__dirname, "/css")));
+app.use(express.static(path.join(__dirname, "/public")));
 
 app.get('/', function(request, response){
     response.render("index");
@@ -41,8 +41,14 @@ app.get('/nelson', function(request, response){
     response.render("nelson");
 });
 
-app.get('/myPaduas', function(request, response){
-    response.render("myPaduas");
+app.get('/viewPaduas', function(request, response){
+    response.render("searchUser");
+});
+
+app.post('/viewPaduas', function(request, response){
+    let user = request.body.user;
+
+    displayAllPosts(user, response);
 });
 
 app.get('/postPadua', function(request, response){
@@ -141,7 +147,7 @@ async function addUserToDB(accountData) {
     try {
         await client.connect();
         const result = await
-        client.db(databaseAndCollection.db).collection(databaseAndCollection.collection).insertOne(accountData);
+        client.db(db).collection(collection).insertOne(accountData);
     } catch (e) {
         console.error(e);
     } finally {
@@ -161,12 +167,15 @@ async function verifyLogin(username, password) {
 }
 
 /* ---------- Remove All User Data ------------- */
-async function removeAllData(user) {
+async function removeAllData(user, response) {
     try {
+        let variables = {user};
         await client.connect();
         const result = await client.db(db)
         .collection(collection)
         .deleteMany({user: user});
+
+        response.render("removeAllData", variables);
     } catch (e) {
         console.error(e);
     } finally {
@@ -174,38 +183,33 @@ async function removeAllData(user) {
     }
 }
 
-app.post("/removeAllData", (request, response) => {
-    let {user} = request.body;
-    let variables = {user};
+app.get("/deleteAccount", (request, response) => {
+    response.render("confirmUserPass");
+});
+
+app.post("/deleteAccount", (request, response) => {
+    let {user, password} = request.body;
 
     if (verifyLogin(user, password)) {
-        removeAllData(user);
-        response.render("removeAllData", variables);
+        removeAllData(user, response);
     } else {
         response.render("failedRemoveAllData", variables);
     }
 });
 
 /* ---------- Display all Posts ------------- */
-app.get("/displayAllPosts", (request, response) => {
-    let {user} = request.body;
-
-    displayAllPosts(user, response)
-
-    response.render("displayAllPosts", variables);
-});
 
 async function displayAllPosts(user, response) {
     try {
         await client.connect();
-        let filter = {user: user};
-        const cursor = client.db(databaseAndCollection.db)
-        .collection(databaseAndCollection.collection)
+        let filter = {user: user, post: { $exists: true } };
+        const cursor = client.db(db)
+        .collection(collection)
         .find(filter);
 
         const result = await cursor.toArray();
 
-        response.render("displayAllPosts", {user, posts: result});
+        response.render("displayAllPosts", {user, paduas: result});
     } catch (e) {
         console.error(e);
     } finally {

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Confirm Username and Password</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1>Account Deletion Confirmation</h1>
+
+    <form action="deleteAccount" method="POST">
+        <fieldset>
+            <label><strong>Username:</strong><input type="text" name="user"></label>
+        </fieldset>
+
+        <fieldset>
+            <label for="pass"><strong>Password:</strong></label>
+            <input type="text" name="pass">
+        </fieldset>
+
+        <fieldset>
+            <input type="reset"/>
+            <input type="submit" value="DELETE ACCOUNT">
+        </fieldset>
+
+    </form>
+</body>

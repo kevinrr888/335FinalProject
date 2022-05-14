@@ -22,6 +22,55 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 app.set("views", path.resolve(__dirname, "templates"));
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended:false}));
+app.use(express.static(path.join(__dirname, "/css")));
+
+app.get('/', function(request, response){
+    response.render("index");
+});
+
+app.get('/createAccount', function(request, response){
+    response.render(path.join(__dirname+"/templates/createAccount.ejs"));
+});
+
+app.get('/login', function(request, response){
+    response.render(path.join(__dirname+"/templates/login.ejs"));
+});
+
+app.get('/nelson', function(request, response){
+    response.render(path.join(__dirname+"/templates/nelson.ejs"));
+});
+
+app.get('/myPaduas', function(request, response){
+    response.render(path.join(__dirname+"/templates/myPaduas.ejs"));
+});
+
+app.get('/postPadua', function(request, response){
+    response.render(path.join(__dirname+"/templates/postPadua.ejs"));
+});
+
+app.post('/createAccount', function(request, response) {
+    let accountData = {
+        name: request.body.name,
+        email: request.body.email,
+        birthdate: request.body.month,
+        birthDay: request.body.day,
+        birthYear: request.body.year,
+        user: request.body.user,
+        pass: request.body.pass
+    }
+
+
+});
+
+app.post('/login', function(request, response) {
+    let user = request.body.user;
+    let pass = request.body.pass;
+
+    // need to grab entry based on user and password and get name from it
+
+    response.render("myAccount", name);
+
+});
 
 process.stdin.setEncoding("utf8");
 

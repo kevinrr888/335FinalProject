@@ -23,7 +23,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 app.set("views", path.resolve(__dirname, "templates"));
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended:false}));
-app.use(express.static(path.join(__dirname, "/css")));
+app.use(express.static(path.join(__dirname, "/public")));
 
 app.get('/', function(request, response){
     response.render("index");
@@ -141,7 +141,7 @@ async function addUserToDB(accountData) {
     try {
         await client.connect();
         const result = await
-        client.db(databaseAndCollection.db).collection(databaseAndCollection.collection).insertOne(accountData);
+        client.db(db).collection(collection).insertOne(accountData);
     } catch (e) {
         console.error(e);
     } finally {

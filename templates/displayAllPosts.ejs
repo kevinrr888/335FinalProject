@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>All Posts</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1>All the posts by <%- user ></h1>
+    <% posts.forEach(function(elem) { %>
+        <p><%= elem.post %></p>
+    <% }); %>
+</body>

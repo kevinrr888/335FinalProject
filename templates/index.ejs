@@ -10,6 +10,16 @@
 
 <body>
 
+    <script>
+        let url = "https://dog.ceo/api/breeds/image/random";
+        const myPromise = fetch(url);
+        myPromise.then(response => response.json()).then(json => processImage(json));
+
+        function processImage(json) {
+            let image = json.message;
+            document.getElementById("image").src = image;
+        }
+    </script>
     <h1><strong>Join Padua Today!</strong></h1>
 
     <h2>Are you new to Padua?</h2>
@@ -20,6 +30,8 @@
 
     <h2>Never heard of Padua before?</h2>
     <p>Click <a href="/nelson">here</a> to learn more about us.</p>
+    
+    <image id="image" width=300px></image>
 
 </body>
 

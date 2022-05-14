@@ -159,3 +159,56 @@ async function verifyLogin(username, password) {
         } 
     }
 }
+
+/* ---------- Remove All User Data ------------- */
+async function removeAllData(user) {
+    try {
+        await client.connect();
+        const result = await client.db(db)
+        .collection(collection)
+        .deleteMany({user: user});
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+app.post("/removeAllData", (request, response) => {
+    let {user} = request.body;
+    let variables = {user};
+
+    if (verifyLogin(user, password)) {
+        removeAllData(user);
+        response.render("removeAllData", variables);
+    } else {
+        response.render("failedRemoveAllData", variables);
+    }
+});
+
+/* ---------- Display all Posts ------------- */
+app.get("/displayAllPosts", (request, response) => {
+    let {user} = request.body;
+
+    displayAllPosts(user, response)
+
+    response.render("displayAllPosts", variables);
+});
+
+async function displayAllPosts(user, response) {
+    try {
+        await client.connect();
+        let filter = {user: user};
+        const cursor = client.db(databaseAndCollection.db)
+        .collection(databaseAndCollection.collection)
+        .find(filter);
+
+        const result = await cursor.toArray();
+
+        response.render("displayAllPosts", {user, posts: result});
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}

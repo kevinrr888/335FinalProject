@@ -13,7 +13,8 @@ require("dotenv").config({ path: path.resolve(__dirname, '.env') });
 
 const userName = process.env.MONGO_DB_USERNAME;
 const password = process.env.MONGO_DB_PASSWORD;
-const databaseAndCollection = {db: process.env.MONGO_DB_NAME, collection: process.env.MONGO_COLLECTION};
+const db = process.env.MONGO_DB_NAME;
+const collection = process.env.MONGO_COLLECTION;
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = `mongodb+srv://${userName}:${password}@cluster0.bzznx.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
@@ -29,23 +30,23 @@ app.get('/', function(request, response){
 });
 
 app.get('/createAccount', function(request, response){
-    response.render(path.join(__dirname+"/templates/createAccount.ejs"));
+    response.render("createAccount");
 });
 
 app.get('/login', function(request, response){
-    response.render(path.join(__dirname+"/templates/login.ejs"));
+    response.render("login");
 });
 
 app.get('/nelson', function(request, response){
-    response.render(path.join(__dirname+"/templates/nelson.ejs"));
+    response.render("nelson");
 });
 
 app.get('/myPaduas', function(request, response){
-    response.render(path.join(__dirname+"/templates/myPaduas.ejs"));
+    response.render("myPaduas");
 });
 
 app.get('/postPadua', function(request, response){
-    response.render(path.join(__dirname+"/templates/postPadua.ejs"));
+    response.render("postPadua");
 });
 
 app.post('/createAccount', function(request, response) {
@@ -62,14 +63,15 @@ app.post('/createAccount', function(request, response) {
 
 });
 
-app.post('/login', function(request, response) {
-    let user = request.body.user;
+app.post('/login', async function(request, response) {
+    let username = request.body.user;
     let pass = request.body.pass;
-
-    // need to grab entry based on user and password and get name from it
-
-    response.render("myAccount", name);
-
+    const user = await verifyLogin(username, pass);
+    if (user) {
+        response.render("myAccount", {name: username});
+    } else {
+        response.render("badLogin");
+    }
 });
 
 process.stdin.setEncoding("utf8");
@@ -98,7 +100,7 @@ async function addUserToDB(name) {
     try {
         await client.connect();
         const result = await
-        client.db(databaseAndCollection.db).collection(databaseAndCollection.collection).insertOne({userName: name});
+        client.db(db).collection(collection).insertOne({userName: name});
     } catch (e) {
         console.error(e);
     } finally {
@@ -106,4 +108,29 @@ async function addUserToDB(name) {
     }
 }
 
-addUserToDB("TESTNAME");
+/* ------------- Search for users ------------*/
+
+// By username
+async function findUser(username) {
+    let filter = {user: username};
+    try {
+        await client.connect();
+        const result = await client.db(db).collection(collection).findOne(filter);
+        return result;
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+/* ---------- Verify login credentials ------------- */
+async function verifyLogin(username, password) {
+    const user = await findUser(username);
+    if (user) {
+        let realPass = user.pass;
+        if (realPass === password) {
+            return user;
+        } 
+    }
+}

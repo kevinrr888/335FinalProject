@@ -198,9 +198,9 @@ app.get("/deleteAccount", (request, response) => {
 });
 
 app.post("/deleteAccount", (request, response) => {
-    let {user, password} = request.body;
+    let {user, pass} = request.body;
 
-    attemptRemoveAllData(user, password, response);
+    attemptRemoveAllData(user, pass, response);
 });
 
 /* ---------- Display all Posts ------------- */

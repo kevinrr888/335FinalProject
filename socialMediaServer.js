@@ -53,14 +53,15 @@ app.post('/createAccount', function(request, response) {
     let accountData = {
         name: request.body.name,
         email: request.body.email,
-        birthdate: request.body.month,
+        birthMonth: request.body.month,
         birthDay: request.body.day,
         birthYear: request.body.year,
         user: request.body.user,
         pass: request.body.pass
     }
 
-
+    addUserToDB(accountData);
+    response.render("accountDetails", accountData);
 });
 
 app.post('/login', async function(request, response) {
@@ -72,6 +73,18 @@ app.post('/login', async function(request, response) {
     } else {
         response.render("badLogin");
     }
+});
+
+app.post('/postPadua', function(request, response) {
+    let padua = {
+        user: request.body.user,
+        post: request.body.post,
+    };
+
+    let post = {post: request.body.post};
+
+    postPaduaToDB(padua);
+    response.render("yourPadua", post);
 });
 
 process.stdin.setEncoding("utf8");
@@ -96,11 +109,11 @@ process.stdin.on("readable", function () {
     process.stdin.resume();
 });
 
-async function addUserToDB(name) {
+async function postPaduaToDB(padua) {
     try {
         await client.connect();
         const result = await
-        client.db(db).collection(collection).insertOne({userName: name});
+        client.db(db).collection(collection).insertOne(padua);
     } catch (e) {
         console.error(e);
     } finally {
@@ -117,6 +130,18 @@ async function findUser(username) {
         await client.connect();
         const result = await client.db(db).collection(collection).findOne(filter);
         return result;
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+async function addUserToDB(accountData) {
+    try {
+        await client.connect();
+        const result = await
+        client.db(databaseAndCollection.db).collection(databaseAndCollection.collection).insertOne(accountData);
     } catch (e) {
         console.error(e);
     } finally {

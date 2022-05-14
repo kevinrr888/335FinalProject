@@ -11,10 +11,14 @@
 
     <h1>Post a Padua</h1>
 
-    <form action="createAccount" method="post">
+    <form action="postPadua" method="post">
         <fieldset>
+            <label><strong>Username:</strong><input type="text" name="user"></label>
+            <hr>
             <em>Your Padua is limited to 250 characters.</em>
-			<label><strong>Name:</strong><textarea name="post" maxlength="250"></textarea></label>
+            <hr>
+			<label for="post"><strong>Write your post here:</strong></label>
+            <textarea name="post" maxlength="250"></textarea>
         </fieldset>
 
         <fieldset>

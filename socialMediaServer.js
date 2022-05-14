@@ -167,6 +167,16 @@ async function verifyLogin(username, password) {
 }
 
 /* ---------- Remove All User Data ------------- */
+async function attemptRemoveAllData(user, password, response) {
+    let variables = {user};
+    const verified = await verifyLogin(user, password)
+    if (verified) {
+        removeAllData(user, response);
+    } else {
+        response.render("failedRemoveAllData", variables);
+    }
+}
+
 async function removeAllData(user, response) {
     try {
         let variables = {user};
@@ -190,11 +200,7 @@ app.get("/deleteAccount", (request, response) => {
 app.post("/deleteAccount", (request, response) => {
     let {user, password} = request.body;
 
-    if (verifyLogin(user, password)) {
-        removeAllData(user, response);
-    } else {
-        response.render("failedRemoveAllData", variables);
-    }
+    attemptRemoveAllData(user, password, response);
 });
 
 /* ---------- Display all Posts ------------- */

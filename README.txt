@@ -4,7 +4,7 @@ Team members: Created by Hanna Choe (), Abigail Miller (115903500), Kevin Rathbu
 
 Description: Basic social media platform. Users can create an account, login, post a text-based message to the site, browse users posts, and delete their account and data.
 
-API Links:
+API Links: https://dog.ceo/dog-api/ (Fetched from: https://dog.ceo/api/breeds/image/random)
 
 YouTube Demo Video:
 

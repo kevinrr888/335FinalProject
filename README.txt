@@ -8,4 +8,6 @@ API Links: https://dog.ceo/dog-api/ (Fetched from: https://dog.ceo/api/breeds/im
 
 YouTube Demo Video:
 
+Heroku link: https://social-media-platform-padua.herokuapp.com/
+
 Make sure to run "npm install" first.
